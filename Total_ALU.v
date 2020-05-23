@@ -6,8 +6,8 @@ module TotalALU( a, b, signal, out ) ;
   
   wire [3:0] cout ;
   wire less_set, cin ;
-  
-  assign cin = (signal==3'b110)?(1):(0) ;
+
+  assign cin = (signal == 3'b110)?(1):(0) ;
   
   ALU_1bit alu1( .a(a[0]), .b(b[0]), .out(out[0]), .signal(signal), .c(cin), .cout(cout[0]), .less(less_set), .set() ) ;
   ALU_1bit alu2( .a(a[1]), .b(b[1]), .out(out[1]), .signal(signal), .c(cout[0]), .cout(cout[1]), .less(0), .set() ) ;
