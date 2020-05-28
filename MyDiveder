@@ -1,0 +1,41 @@
+`timescale 1ns/1ns 
+
+module Diveder( clk, divided, divisor, dataout, reset ) ; // divided 被除數 divisor 除數
+  // 定義接線
+  input clk, reset ;
+  input [7:0] divided, divisor ;
+  output[15:0] dataout ;
+  
+  reg out ;
+  reg cycle[3:0] ; // 4bits
+  reg [7:0] quot ;
+  reg [15:0] divr, rem ;
+  
+  always@( posedge clk or reset ) begin 
+    if ( reset ) begin
+	  // initialize
+	end
+	
+	else begin
+	  if ( out ) begin
+	    dataout <= 
+	  end 
+	  
+	  else begin
+	    // sub
+	    if ( positive ) begin
+	      // quot+1
+	    end
+	  
+	    else begin // negetive
+	      // restore
+	    end
+	  
+	    // quot left shift
+	    // divisor right shift
+	    // cycle+1
+	  end
+	end
+  end 
+endmodule
+
