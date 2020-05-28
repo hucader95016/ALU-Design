@@ -1,41 +1,59 @@
 `timescale 1ns/1ns 
 
-module Diveder( clk, divided, divisor, dataout, reset ) ; // divided 被除數 divisor 除數
-  // 定義接線
+module Diveder( clk, divided, divisor, signal, dataout, reset ) ; // divided è¢«é¤æ¸ divisor é¤æ¸
+  // å®ç¾©æ¥ç·
   input clk, reset ;
+  input [5:0] signal ;
   input [7:0] divided, divisor ;
   output[15:0] dataout ;
   
-  reg out ;
-  reg cycle[3:0] ; // 4bits
+  reg start ;
   reg [7:0] quot ;
-  reg [15:0] divr, rem ;
+  reg [15:0] divr, rem ; // æ´åé¤æ¸è¢«é¤æ¸
+  reg [15:0] temp ;
+  
+  parameter DIVU = 6'b011011;
+  parameter OUT = 6'b111111;
   
   always@( posedge clk or reset ) begin 
     if ( reset ) begin
-	  // initialize
-	end
+      // initialize
+      start = 1'b0 ;
+      quot = 8'b0 ;
+      divr = 16'b0 ;
+      rem = 16'b0 ;
+      temp = 16'b0 ;
+    end
 	
-	else begin
-	  if ( out ) begin
-	    dataout <= 
-	  end 
+    else begin
+      if ( start == 0 ) begin
+	divr <= { divisor, 8'b0 } ;
+	rem <= { 8'b0, divided } ;
+	start <= start + 1'b1 ;
+      end
 	  
-	  else begin
-	    // sub
-	    if ( positive ) begin
-	      // quot+1
-	    end
-	  
-	    else begin // negetive
-	      // restore
-	    end
-	  
-	    // quot left shift
-	    // divisor right shift
-	    // cycle+1
-	  end
+      case ( signal )
+      DIVU : begin
+        rem <= rem - divr ;
+	if ( rem[15] == 0 ) begin // positive
+	  quot <= quot + 1 ;		  
 	end
-  end 
-endmodule
 
+        else begin // negetive
+          rem <= rem + divr ; 
+        end
+
+        quot <= { quot[6:0], 1'b0 } ; // shift left
+        divr <= { 1'b0, divr[15:1] } ; // shift right
+      end
+	  
+      OUT : begin
+	temp[15:8] <= quot ;
+        temp[7:0] <= rem ;
+      end
+      endcase
+    end
+  end // always block
+  
+  assign dataout = temp ;
+endmodule
