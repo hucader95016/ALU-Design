@@ -1,15 +1,14 @@
 `timescale 1ns/1ns
-module ALU_32bits( a, b, inSignal, out ) ;
+module ALU_32bits( a, b, inSignal, dataOut ) ;
   input [31:0] a, b ;
   input [5:0] inSignal ;
-  output [31:0] out ;  
+  output [31:0] dataOut ;  
   
   wire [31:0] out ;
   wire [31:0] cout ;
   wire less_set, cin ;
   wire [2:0] signal ;
   wire signalSlt ;
-  wire [31:0] tempOut ;
 
 
   assign signal = (inSignal == 6'b100100)?(3'b000):
@@ -53,6 +52,9 @@ module ALU_32bits( a, b, inSignal, out ) ;
   ALU_1bit alu31( .a(a[30]), .b(b[30]), .out(out[30]), .signal(signal), .c(cout[29]), .cout(cout[30]), .less(1'b0), .set() ) ;
   ALU_1bit alu32( .a(a[31]), .b(b[31]), .out(out[31]), .signal(signal), .c(cout[30]), .cout(cout[31]), .less(1'b0), .set(less_set) ) ;
   
+ 
 
+  assign dataOut = (inSignal != 6'b101010)?(out):
+                   (out[0] == 1'b0)?(a):(b) ;
 
 endmodule 

@@ -13,7 +13,7 @@ module Total_ALU( clk, dataA, dataB, signal, dataOut, reset );
   
   ALU_Control U_ALU_Control( .clk(clk), .inSignal(signal), .outSignal(signalToAll) ) ;
 
-  ALU_32bits U_ALU_32bits( .a(dataA), .b(dataB), .inSignal(signalToAll), .out(ALUOut) ) ;
+  ALU_32bits U_ALU_32bits( .a(dataA), .b(dataB), .inSignal(signalToAll), .dataOut(ALUOut) ) ;
 
   Diveder U_Diveder( .clk(clk), .divided(dataA), .divisor(dataB), .signal(signalToAll), .dataout(DivAns), .reset(reset) ) ;
 
