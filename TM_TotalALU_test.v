@@ -1,60 +1,146 @@
 `timescale 1ns/1ns
 module TM_TotalALU_test ;
-  reg [3:0] a, b ;
-  reg [2:0] signal ;
-  wire [3:0] out ;
+  reg clk, rst ;
+  reg [31:0] a, b, ans ;
+  reg [5:0] signal ;
+  wire [31:0] out ;
+  integer fp_r, fp_r_ans, eof, cnt;
   
   parameter t = 200 ;
-  TotalALU U_totalALU( .a(a), .b(b), .signal(signal), .out(out) ) ;
+  Total_ALU U_Total_ALU( .clk(clk), .dataA(a), .dataB(b), .signal(signal), .dataOut(out), .reset(rst) );
   
   initial begin
-    #t // and
-    signal = 3'b000 ;
-    a = 4'b0011 ;
-    b = 4'b1101 ;
+    clk = 1'b1;
+    forever #5 clk = ~clk;
+  end
 
-    #t // add
-      signal = 3'b010 ;
-      a = 4'b0010 ;
-      b = 4'b1100 ;
-	  
-    #t 
-      a = 4'b1000 ;
-      b = 4'b1111 ;
-
-    #t // sub 
-      signal = 3'b110 ;
-      a = 4'b1011 ;
-      b = 4'b0010 ;
-
-    #t 	
-      a = 4'b0110 ;
-      b = 4'b0111 ;
+  /*initial begin
+    rst = 1'b1;
+    #10;
+    rst = 1'b0;
     
-    #t // and
-      signal = 3'b000 ;
-      a = 4'b1110 ;
-      b = 4'b0101 ;	
+    //and
+    signal=6'd36;
+    a=32'd16;
+    b=32'd12;
+    
+    #10;
+    //or
+    signal=6'd37;
+    a=32'd16;
+    b=32'd12;
 
-    #t 	
-      a = 4'b0111 ;
-      b = 4'b0110 ;
+    #10;
+    //add
+    signal=6'd32;
+    a=32'd16;
+    b=32'd12;
 
-    #t 	
-      a = 4'b0110 ;
-      b = 4'b0100 ;
-  
-    #t // or
-      signal = 3'b001 ;
-      a = 4'b1011 ;
-      b = 4'b0000 ;
-	  
-    #t // slt
-      signal = 3'b111 ;
-      a = 4'b0010 ;
-      b = 4'b0101 ;	 
-	  
-    #t 
-      $stop;
-  end 
+    #10;
+    //sub
+    signal=6'd34;
+    a=32'd16;
+    b=32'd12;
+
+    #10;
+    //slt
+    signal=6'd42;
+    a=32'd16;
+    b=32'd12; 
+
+    #10;
+    //srl
+    signal=6'd02;
+    a=32'd16;
+    b=32'd2;
+
+    #10;
+    //div
+    signal=6'd27;
+    a=32'd16;
+    b=32'd5;
+    #330;
+    signal=6'b111111;
+
+    #100 $stop;  
+    
+  end */
+
+	initial begin
+		eof = 0;
+		rst = 1'b1;
+		#10;
+		rst = 1'b0;
+		/*
+			?????????"input.txt"?????
+			????????
+			????????  InputA  InputB
+		*/
+		fp_r = $fopen( "D:/School/mid-term/input.txt", "r" ) ;
+		/*
+			???????"ans.txt"?????
+			??????????
+		*/
+		fp_r_ans = $fopen( "D:/School/mid-term/ans.txt", "r" );
+		/*
+			??????ALU???????
+			??????????"Correct"
+			???????????????
+			???????????cycle number
+		*/
+		$display( "Start\n" );
+		eof = $fscanf(fp_r_ans, "%d", ans);
+		while( eof != -1 ) begin
+			cnt = $fscanf(fp_r, "%d%d%d", signal, a, b );
+			$write( "%d: Input: ", $time/10 );
+			if ( signal == 6'd36 ) $write( "AND(%d)", signal );
+			else if ( signal == 6'd37 ) $write( "OR(%d) ", signal );
+			else if ( signal == 6'd32 ) $write( "ADD(%d) ", signal );
+			else if ( signal == 6'd34 ) $write( "SUB(%d) ", signal );
+			else if ( signal == 6'd42 ) $write( "SLT(%d) ", signal );
+			else if ( signal == 6'd2 ) $write( "SRL(%d) ", signal );
+			else if ( signal == 6'd27 ) $write( "DIVU(%d) ", signal );
+			$display( "%d%d", a, b  );
+			if ( signal == 32'd27 ) begin
+				#330 ;
+				$display( "%d: Div End\n", $time/10 );
+				/*
+					?????????????Hi-Lo???
+					??????MFHI, MFLO??????????
+				*/
+				#10;
+				#10;
+				
+				$display( "                   Move Hi" );
+				signal = 6'd16;
+				#10;
+				if ( ans == out )
+					$display( "%d: Correct: Your answer is:%d,\n                                 Correct answer is:%d\n", $time/10, out, ans );
+				else
+					$display( "%d: Wrong Answer: Your answer is:%d,\n                                             Correct answer is:%d\n", $time/10, out, ans );
+				$display( "                   Move Lo" );
+				signal = 6'd18;
+				eof = $fscanf(fp_r_ans, "%d", ans);
+				#10;
+				if ( ans == out )
+					$display( "%d: Correct: Your answer is:%d,\n                                 Correct answer is:%d\n", $time/10, out, ans );
+				else
+					$display( "%d: Wrong Answer: Your answer is:%d,\n                                             Correct answer is:%d\n", $time/10, out, ans );
+			end
+			else begin
+				#10;
+				if ( ans == out )
+					$display( "%d: Correct: Your answer is:%d,\n                                 Correct answer is:%d\n", $time/10, out, ans );
+				else
+					$display( "%d: Wrong Answer: Your answer is:%d,\n                                             Correct answer is:%d\n", $time/10, out, ans );
+			end
+			eof = $fscanf(fp_r_ans, "%d", ans);
+		end
+		$fclose( fp_r );
+		$fclose( fp_r_ans );
+		$display( "Simulation End\n" );
+		$stop();
+	end
+
 endmodule 
+

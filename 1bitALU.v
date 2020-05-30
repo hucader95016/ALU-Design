@@ -19,5 +19,6 @@ assign set = temp[2] ;
 assign temp[3] = less ;
 
 assign out = ( signal[2] )?( (signal[0])?(temp[3]):(temp[2]) ):( (signal[1])?(temp[2]):( (signal[0])?(temp[1]):(temp[0]) ) ) ;
+
 endmodule
 
