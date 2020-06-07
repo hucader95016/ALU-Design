@@ -61,6 +61,7 @@ module Diveder( clk, divided, divisor, signal, dataout, reset ) ; // divided 被
         //$display("%d\n", counter) ;
 	temp[63:32] = quot ;
         temp[31:0] = rem[31:0] ;
+
       end
       endcase
     end

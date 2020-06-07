@@ -13,59 +13,6 @@ module TM_TotalALU_test ;
     clk = 1'b1;
     forever #5 clk = ~clk;
   end
-
-  /*initial begin
-    rst = 1'b1;
-    #10;
-    rst = 1'b0;
-    
-    //and
-    signal=6'd36;
-    a=32'd16;
-    b=32'd12;
-    
-    #10;
-    //or
-    signal=6'd37;
-    a=32'd16;
-    b=32'd12;
-
-    #10;
-    //add
-    signal=6'd32;
-    a=32'd16;
-    b=32'd12;
-
-    #10;
-    //sub
-    signal=6'd34;
-    a=32'd16;
-    b=32'd12;
-
-    #10;
-    //slt
-    signal=6'd42;
-    a=32'd16;
-    b=32'd12; 
-
-    #10;
-    //srl
-    signal=6'd02;
-    a=32'd16;
-    b=32'd2;
-
-    #10;
-    //div
-    signal=6'd27;
-    a=32'd16;
-    b=32'd5;
-    #330;
-    signal=6'b111111;
-
-    #100 $stop;  
-    
-  end */
-
 	initial begin
 		eof = 0;
 		rst = 1'b1;
@@ -91,6 +38,9 @@ module TM_TotalALU_test ;
 		$display( "Start\n" );
 		eof = $fscanf(fp_r_ans, "%d", ans);
 		while( eof != -1 ) begin
+			rst = 1'b1 ;
+			#10;
+			rst = 1'b0 ;
 			cnt = $fscanf(fp_r, "%d%d%d", signal, a, b );
 			$write( "%d: Input: ", $time/10 );
 			if ( signal == 6'd36 ) $write( "AND(%d)", signal );
@@ -135,7 +85,7 @@ module TM_TotalALU_test ;
 					$display( "%d: Wrong Answer: Your answer is:%d,\n                                             Correct answer is:%d\n", $time/10, out, ans );
 			end
 			eof = $fscanf(fp_r_ans, "%d", ans);
-		end
+		   end
 		$fclose( fp_r );
 		$fclose( fp_r_ans );
 		$display( "Simulation End\n" );

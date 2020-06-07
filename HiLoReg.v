@@ -17,6 +17,6 @@ module HiLoReg( clk, divAns, hiOut, lowOut, rst ) ;
     end 
   end
 
-  assign hiOut = temp[63:32] ;
-  assign lowOut = temp[31:0] ;
+  assign lowOut = temp[63:32] ;
+  assign hiOut = temp[31:0] ;
 endmodule

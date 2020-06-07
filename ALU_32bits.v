@@ -54,7 +54,6 @@ module ALU_32bits( a, b, inSignal, dataOut ) ;
   
  
 
-  assign dataOut = (inSignal != 6'b101010)?(out):
-                   (out[0] == 1'b0)?(a):(b) ;
+  assign dataOut = (a==b)?(32'd0):(out) ;
 
 endmodule 
